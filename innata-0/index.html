@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Innata-0: The First Native Embodied World System</title>
+<meta name="description" content="Innata-0 is the first native embodied world system: it co-designs a tri-tower World–Action Model with a persistent agent, so robots can understand, predict, act, verify, recover, and keep learning in the open physical world.">
+<meta property="og:title" content="Innata-0: The First Native Embodied World System">
+<meta property="og:description" content="The first native embodied world system: a tri-tower World–Action Model inside a persistent agent loop. Innata Team, Beijing Academy of Artificial Intelligence.">
+<meta property="og:image" content="https://baai-eai.github.io/innata-0/assets/img/og.jpg">
+<meta property="og:url" content="https://baai-eai.github.io/innata-0/">
+<link rel="canonical" href="https://baai-eai.github.io/innata-0/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#050505">
+<!-- Motion is opt-in: the class is set here before first paint, and withdrawn if site.js never reports in. -->
+<script>(function(){try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches){var d=document.documentElement;d.classList.add("motion");setTimeout(function(){if(!window.__motionReady)d.classList.remove("motion")},2500)}}catch(e){}})();</script>
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="assets/css/site.css?v=d07c23c1">
+<!-- Visit statistics (Google tag). Requested only on the published site (or with ?ga=1, for a deliberate test),
+     and only after the page itself has loaded: where Google cannot be reached, nothing on the page waits for it. -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+(function(){
+  // published site, or any address opened with ?ga=1 (a deliberate test run)
+  if (location.hostname !== "baai-eai.github.io" && !/[?&]ga=1(&|$)/.test(location.search)) return;
+  function go(){ var s = document.createElement("script"); s.async = true; s.src = "https://www.googletagmanager.com/gtm.js?id=GTM-KP5TNFQL"; document.head.appendChild(s); }
+  if (document.readyState === "complete") go(); else addEventListener("load", go, { once: true });
+})();
+</script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+
+<header class="bar">
+  <a class="bar-name" href="#top" data-i18n="bar.name">Innata-0</a>
+  <nav aria-label="Sections" data-i18n-aria-label="a11y.nav">
+    <a href="#system" data-i18n="nav.system">System</a>
+    <a href="#data" data-i18n="nav.data">Data</a>
+    <a href="#model" data-i18n="nav.model">Model</a>
+    <a href="#agent" data-i18n="nav.agent">Agent</a>
+    <a href="#results" data-i18n="nav.results">Results</a>
+    <a href="#cite" data-i18n="nav.cite">Cite</a>
+  </nav>
+  <a class="bar-org" href="https://www.baai.ac.cn" rel="noopener" aria-label="BAAI, Beijing Academy of Artificial Intelligence" data-i18n-aria-label="a11y.org"><img class="logo-en" src="assets/img/baai-logo-en.svg" alt="BAAI, Beijing Academy of Artificial Intelligence" width="210" height="40"></a>
+</header>
+
+<main id="main">
+
+<!-- ───────────── Hero: full-bleed film ───────────── -->
+<!-- The film is loaded by site.js after the page and plays with its sound on (muted until the
+     visitor's first click where the browser insists). To put a new cut on the page, run
+     tools/update-film.sh; it writes the film, the poster, and the attributes below. -->
+<section class="hero-film" id="top">
+  <video id="hero-video" loop playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" x-webkit-airplay="allow" preload="none"
+         poster="assets/img/film-poster.jpg?v=b7817b35"
+         data-poster-en="assets/img/film-poster.jpg?v=b7817b35"
+         data-src-en="assets/video/innata0-promo.mp4?v=b7817b35"></video>
+  <!-- The film's scrubber and mute. Play or pause sits with the links below; clicking the picture pauses too. -->
+  <div class="film-bar" id="film-bar">
+    <span class="film-time" id="film-now">0:00</span>
+    <input class="film-seek" id="film-seek" type="range" min="0" max="100" step="0.1" value="0" disabled aria-label="Seek">
+    <span class="film-time" id="film-all">–:––</span>
+    <button class="film-btn" id="hero-sound" type="button" aria-label="Mute" aria-pressed="false"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 7.5h3l4-3.5v12l-4-3.5H3z"/><path class="wave i-on" d="M13 7.2a4 4 0 0 1 0 5.6M15.2 5a7 7 0 0 1 0 10"/><path class="wave i-off" d="M13.6 7.6l4 4.8M17.6 7.6l-4 4.8"/></svg></button>
+  </div>
+  <!-- Shown only while the browser is holding the sound back; site.js toggles it. -->
+  <button class="sound-cue" id="sound-cue" type="button" hidden>
+    <svg class="i-snd" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 7.5h3l4-3.5v12l-4-3.5H3z"/><path class="wave" d="M13 7.2a4 4 0 0 1 0 5.6M15.2 5a7 7 0 0 1 0 10"/></svg>
+    <svg class="i-go" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M6 3.5l10 6.5-10 6.5z"/></svg>
+    <span>Click for sound</span>
+  </button>
+  <div class="hero-film-text">
+    <h1 data-i18n="hero.h1">Innata-0</h1>
+    <p class="hero-sub" data-i18n="hero.sub">The first native embodied world system</p>
+    <p class="hero-by" data-i18n="hero.by">Innata Team<br>Beijing Academy of Artificial Intelligence</p>
+    <div class="hero-links">
+      <button class="film-btn" id="hero-pause" type="button" aria-label="Pause film"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path class="i-pause" d="M3.5 2h3v12h-3zM9.5 2h3v12h-3z"/><path class="i-play" d="M4.5 2l9 6-9 6z"/></svg></button>
+      <a class="btn btn-primary" href="#" data-pending aria-disabled="true"><span data-i18n="btn.report">Technical report</span><span class="soon" data-i18n="btn.soon">Coming soon</span></a>
+      <a class="btn" href="#" data-pending aria-disabled="true"><span data-i18n="btn.code">Code</span><span class="soon" data-i18n="btn.soon">Coming soon</span></a>
+      <a class="btn" href="#" data-pending aria-disabled="true"><span data-i18n="btn.weights">Model weights</span><span class="soon" data-i18n="btn.soon">Coming soon</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── System ───────────── -->
+<section class="sec" id="system">
+  <div class="sys-top">
+    <div class="sec-head">
+      <h2 data-i18n="sys.h2">The model reads the task state the agent writes</h2>
+      <p class="lede" data-i18n="sys.lede">The physical world is open-ended, dynamic, and only partly observable. A model on its own struggles to stay reliable over a long task, above all when it must correct itself; bolting an agent onto a finished model can leave planning and physical control out of step. Innata-0 designs the two together, around one task interface that both of them use.</p>
+      <p class="lede lede-2" data-i18n="sys.lede2">“Native” names three capabilities that neither part has alone: <strong>Plan</strong>, carrying a long task through by coordinating the model across subtasks; <strong>Recover</strong>, handling uncertainty and unexpected failure during execution; and <strong>Evolve</strong>, consolidating verified experience into skills that later runs can reuse.</p>
+    </div>
+    <figure class="loop" aria-labelledby="loop-cap">
+      <!-- The loop as a ring of light in space: silk veils billow off it, a sphere of points (the WAM) turns inside, the six stages ride it. Drawn by site.js. -->
+      <div class="orb" id="origin" role="group" aria-label="The Innata-0 interaction loop. Select a stage to read about it." data-i18n-aria-label="a11y.loop">
+        <canvas aria-hidden="true"></canvas>
+        <span class="orb-core" aria-hidden="true">Innata-0-WAM</span>
+      </div>
+      <figcaption id="loop-cap" class="loop-cap">
+        <span class="loop-cap-who" id="loop-who">Agent</span>
+        <strong id="loop-title">Structure</strong>
+        <span id="loop-body">The agent organizes a long-horizon instruction into causally ordered subtasks, sized to what the model can execute, and keeps the task state current instead of re-reading the instruction at every step.</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <figure class="viz why" id="why-fig">
+    <h3 class="why-h" data-i18n="why.h">A model alone, or an agent bolted on: <em>neither holds</em></h3>
+    <div id="why-chart" class="why-plot" role="img" data-i18n-aria-label="a11y.why" aria-label="Two paths that do not hold. A standalone model: a long task proceeds subtask by subtask and breaks down partway. An agent bolted onto a finished model: the plan and the physical control start together and drift apart."></div>
+    <p class="why-so" data-i18n="why.so">So the model and the agent are designed together.</p>
+  </figure>
+
+  <div class="duo">
+    <div class="duo-col">
+      <h3>Innata-0-WAM</h3>
+      <p class="duo-verbs" data-i18n="duo1.verbs">Physical execution foundation</p>
+      <p data-i18n="duo1.p">One network understands the scene, predicts how it will change, and generates continuous action chunks for the active subtask.</p>
+      <p class="duo-not" data-i18n="duo1.not"><span class="duo-not-k">Never has to</span> infer the overall structure of the task, or decide when a subtask is finished.</p>
+    </div>
+    <div class="duo-join" aria-hidden="true">
+      <span></span>
+    </div>
+    <div class="duo-col">
+      <h3>Innata-0-Agent</h3>
+      <p class="duo-verbs" data-i18n="duo2.verbs">System coordinator</p>
+      <p data-i18n="duo2.p">It breaks a long task into subtasks the model can execute, decides from physical evidence when each is done, and takes over the live scene when execution leaves course.</p>
+      <p class="duo-not" data-i18n="duo2.not"><span class="duo-not-k">Never has to</span> write low-level control code, or wait for the model to be retrained before it can use what it learned.</p>
+    </div>
+  </div>
+  <figure class="viz iface" id="iface-fig">
+    <div id="iface-chart" class="iface-plot" role="img" data-i18n-aria-label="a11y.iface" aria-label="The task interface shared by the model and the agent: the complete instruction, the active subtask, and the history of completed subtasks. Training annotations fill it; during execution the agent maintains it from verified physical outcomes. Validated experience becomes reusable skills for the agent; successful rollout segments return to the data pipeline for subsequent policy training."></div>
+  </figure>
+  <p class="duo-note" data-i18n="duo.note">Training annotations fill the three fields; during execution the agent maintains the same representation and updates it from verified physical outcomes. Successful rollout segments, including corrective actions and what follows a recovery, return through the shared data pipeline for subsequent policy training.</p>
+  <div class="deltas deltas-2" id="deltas">
+    <div class="delta"><span class="cap-tag">Same checkpoint</span><span class="vh">: </span><span class="d-n"><span class="d-from">32.4%</span><span class="d-arrow" aria-hidden="true">→</span><span class="vh"> to </span>43.6%</span><span class="d-l" data-i18n="delta.2">Unseen task compositions on RoboCasa365: the same WAM checkpoint, without and with the agent</span></div>
+    <div class="delta"><span class="cap-tag">Same model</span><span class="vh">: </span><span class="d-n"><span class="d-from">15.98%</span><span class="d-arrow" aria-hidden="true">→</span><span class="vh"> to </span>24.17%</span><span class="d-l" data-i18n="delta.1">Average success on RoboDojo-Sim across five dimensions: the model with a fixed plan, then with the agent</span></div>
+  </div>
+</section>
+
+<!-- ───────────── Data ───────────── -->
+<section class="sec" id="data">
+  <div class="sec-head">
+    <p class="eyebrow" data-i18n="data.eyebrow">One recording, many lessons</p>
+    <h2 data-i18n="data.h2">Annotated once, reused for understanding, prediction, action, and touch</h2>
+    <p class="lede" data-i18n="data.lede">Co-design starts in the data: the annotations that train the WAM fill the same task fields the agent maintains at run time. The WAM learns mainly from open datasets and web-accessible corpora: image–text pairs, general video, egocentric human video, real-robot recordings, and robot simulation.</p>
+    <p class="lede lede-2" data-i18n="data.lede2">A video holds more than its caption says. Task-oriented knowledge refinement annotates each recording once (its events, participants, and stages) and derives what each objective needs: a grounding question for understanding, an instruction-conditioned prediction for video, an action example for control.</p>
+  </div>
+
+  <figure class="clips">
+    <div class="clip-row">
+      <figure class="clip">
+        <img loading="lazy" decoding="async" src="assets/img/sweep-0.jpg" width="640" height="480" data-i18n-alt="a11y.clip1" alt="Two robot arms over a tiled floor; the left gripper holds a light-blue dustpan and the right gripper holds a matching broom.">
+        <figcaption data-i18n="clip1.cap"><span class="t">5.57–11.33 s</span><strong>Separating the tools</strong>The right gripper grasps the broom handle and lifts it out of the dustpan held by the left gripper.</figcaption>
+      </figure>
+      <figure class="clip">
+        <img loading="lazy" decoding="async" src="assets/img/sweep-1.jpg" width="640" height="480" data-i18n-alt="a11y.clip2" alt="The right arm sweeps a crumpled white paper ball toward the dustpan held steady by the left arm.">
+        <figcaption data-i18n="clip2.cap"><span class="t">13.33–18.23 s</span><strong>Sweeping up paper</strong>Short, repeated broom strokes push the paper ball into the dustpan. Described as one continuous process rather than as before-and-after states.</figcaption>
+      </figure>
+      <figure class="clip">
+        <img loading="lazy" decoding="async" src="assets/img/sweep-2.jpg" width="640" height="480" data-i18n-alt="a11y.clip3" alt="The left arm tilts the dustpan over a black trash bin, emptying crumpled paper into it.">
+        <figcaption data-i18n="clip3.cap"><span class="t">26.60–31.57 s</span><strong>Emptying the dustpan</strong>The left arm tilts the pan over the bin until its contents slide out, then lowers it empty.</figcaption>
+      </figure>
+    </div>
+    <figcaption class="clips-cap" data-i18n="clips.cap">Clips from one setting share one scene card. Each interval adds its own action description and state change, plus an instruction when a manipulation is visible. Text is condensed from the annotation cards. Corrective trajectories and task continuations supervise recovery.</figcaption>
+  </figure>
+
+  <div class="facts">
+    <div><span class="fact-n">~100,000</span><span class="fact-l" data-i18n="fact1.l">hours in the raw source pool before filtering</span></div>
+    <div><span class="fact-n">60.8M</span><span class="fact-l" data-i18n="fact2.l">eligible vision–language records, sampled into a 20M-example mid-training mix for the understanding tower</span></div>
+    <div><span class="fact-n">50% → 25% → 0%</span><span class="fact-l" data-i18n="fact3.l">egocentric share across the three policy-pretraining phases, falling as robot state and touch are added (illustrative)</span></div>
+  </div>
+
+  <div class="data-grid">
+    <figure class="viz" id="emb-fig">
+      <h3 data-i18n="emb.h3">No single embodiment exceeds 21% of the joint-space pool</h3>
+      <div id="emb-chart" class="emb"></div>
+      <figcaption data-i18n="emb.cap">Share of source duration in the joint-space pool, before filtering. The 14 largest groups are shown separately; the remaining 8.3% is pooled as Others. Excludes end-effector and human egocentric data.</figcaption>
+    </figure>
+    <div class="touch">
+      <h3 data-i18n="touch.h3">Touch on one shared hand surface</h3>
+      <p data-i18n="touch.p1">Tactile sensors on gloves, dexterous hands, and grippers report contact in different forms: pressure readings, directional force arrays, or images of surface deformation. Each sensor is calibrated once onto a shared MANO hand surface, and its readings are summarized per region as a 28-dimensional proxy: contact centers, resultant force and moment, contact area and shape, spread, and peak.</p>
+      <p data-i18n="touch.p2">Missing coverage stays separate from measured absence of contact, so an unsensed region or an invalid reading is not taken as evidence of no contact.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── Model ───────────── -->
+<section class="sec" id="model">
+  <div class="sec-head">
+    <p class="eyebrow" data-i18n="model.eyebrow">Three towers, one shared attention</p>
+    <h2 data-i18n="model.h2">Every action is generated with a prediction of how it will look and feel</h2>
+    <p class="lede" data-i18n="model.lede">All of that supervision trains one network. Innata-0-WAM is a tri-tower Mixture-of-Transformers: one tower for understanding, one for world prediction, and one that generates action and touch together. Video, action, and tactile tokens attend to one another within each sample, so an action chunk comes with the future video and, where sensors exist, the future touch. Observed frames, with robot state and tactile observations where available, are the conditions.</p>
+  </div>
+
+  <figure class="towers">
+    <div class="towers-plot" id="towers-plot" data-i18n-aria-label="a11y.towers" aria-label="Architecture: inputs enter three towers, understanding, world prediction, and action with touch; each tower has its own normalization, projections, and feed-forward weights, and all three meet in one joint attention in every one of the 36 layers; outputs are answers and spatial predictions, future video, and action chunks with future touch.">
+      <!-- built by site.js -->
+    </div>
+    <figcaption data-i18n="towers.cap">Separate weights per tower; shared attention in every layer. U&nbsp;tokens attend causally among themselves; V, A, and T&nbsp;tokens attend to every valid token in the sample, U&nbsp;included. Four token types: U&nbsp;understanding, V&nbsp;video, A&nbsp;action, T&nbsp;tactile.</figcaption>
+  </figure>
+
+  <div class="tower-notes">
+    <div>
+      <h3 data-i18n="tw1.h3"><span class="chip c-u">U</span>Understanding</h3>
+      <p data-i18n="tw1.p">8B, fine-tuned from Qwen3-VL-8B. Grounds language in scenes, objects, and spatial relations, with an emphasis on the 3D grounding manipulation needs. Its attention is causal; it supplies conditioning features to the generation streams.</p>
+    </div>
+    <div>
+      <h3 data-i18n="tw2.h3"><span class="chip c-v">V</span>World prediction</h3>
+      <p data-i18n="tw2.p">8B backbone of Cosmos 3 Nano. Predicts future video latents by flow matching, and when a time-aligned action trajectory is given, predicts the visual consequences of that action.</p>
+    </div>
+    <div>
+      <h3 data-i18n="tw3.h3"><span class="chip c-a">A</span><span class="chip c-t">T</span>Action and touch</h3>
+      <p data-i18n="tw3.p">About 1B parameters: the same 36 layers as the 8B towers, at width 1280. Generates continuous actions and, where sensors exist, future tactile states. 64 domain-aware projection slots let gripper, dexterous-hand, and joint-space control share one Transformer; end-effector and joint targets keep separate layouts.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── Agent ───────────── -->
+<section class="sec" id="agent">
+  <div class="sec-head">
+    <h2 data-i18n="agent.h2">Knowing an action finished is not knowing the task succeeded</h2>
+    <p class="lede" data-i18n="agent.lede">The WAM executes one subtask at a time; it does not decide when to move on. The agent does, and it decides from physical evidence, because a gripper command can finish with nothing in the gripper. It plans what the model should execute, checks what actually happened, takes over when an anomaly is verified, and carries what it learned into later runs.</p>
+  </div>
+
+  <div class="agent-grid">
+    <div class="agent-block">
+      <h3 data-i18n="mem.h3"><span class="cap-tag">Plan</span><span class="vh">: </span>Three layers of memory carry experience forward without a model update</h3>
+      <ol class="ladder">
+        <li data-i18n="mem.li1"><strong>Task memory</strong> The agent's running summary of the episode: progress, completed subtasks, open dependencies, relevant object states, anomalies, and recovery outcomes.</li>
+        <li data-i18n="mem.li2"><strong>Physical state memory</strong> A spatial component keeps object locations and scene relations beyond the current view; a tactile component keeps verified interaction states, such as whether an object is still held.</li>
+        <li data-i18n="mem.li3"><strong>Causal interaction memory</strong> Validated transitions distilled into precondition, action, and effect, reusable for planning and recovery without an immediate model update.</li>
+      </ol>
+    </div>
+
+    <div class="agent-block">
+      <h3 data-i18n="mon.h3"><span class="cap-tag">Plan</span><span class="vh">: </span>A stage changes only on evidence</h3>
+      <p data-i18n="mon.p">The agent reviews progress at intervals and classifies the current subtask as complete, in progress, or uncertain. It advances only when evidence shows the subtask is done. The finished stage moves into the history, and the model receives the next subtask.</p>
+      <blockquote class="obs">
+        <p data-i18n="obs.p1"><span class="obs-k">Not a failure</span> Slow progress, or a view that is briefly ambiguous.</p>
+        <p data-i18n="obs.p2"><span class="obs-k">A failure</span> Evidence over time that execution has left the intended course of the task.</p>
+        <footer data-i18n="obs.f">Anomaly verification applies the same caution: only the second triggers an intervention.</footer>
+      </blockquote>
+    </div>
+  </div>
+
+  <figure class="viz run" id="run-fig">
+    <h3 class="run-h" data-i18n="run.h">One run, three lanes</h3>
+    <p class="viz-sub" data-i18n="run.sub">The agent structures the task, the model executes it in action chunks, and the agent checks the result at scheduled points. When a check verifies an anomaly, the model stops and the agent finishes the task.</p>
+    <div id="run-chart" class="run-plot" role="img" data-i18n-aria-label="a11y.run" aria-label="One run on three lanes. Structure: five subtasks, the first three verified complete. Execute: the model produces action chunks through the first three subtasks and part of the fourth; from there the agent is in control to the end. Verify: three scheduled checks pass, the fourth verifies an anomaly."></div>
+    <figcaption data-i18n="run.cap">Schematic. In the simulation evaluations, stage review runs every 80 simulator steps and verification every 256, tightening to every 128 inside a critical window and immediately after a high-risk event.</figcaption>
+  </figure>
+
+  <div class="recovery">
+    <h3 data-i18n="rec.h3"><span class="cap-tag">Recover</span><span class="vh">: </span>Once an anomaly is verified, the agent takes over</h3>
+    <p data-i18n="rec.p">Execution by the model is suspended and control passes to the agent, which works on the live scene and carries the task through to its end. It does not generate low-level control code: it selects tools from four groups (observation, perception, motion adjustment, and atomic skills), sets their bounded parameters, and composes them into short closed-loop interventions of at most 20 reasoning-and-tool rounds.</p>
+    <ol class="steps" aria-label="The recovery loop" data-i18n-aria-label="a11y.steps">
+      <li data-i18n="step.1">Observe</li><li data-i18n="step.2">Reason</li><li data-i18n="step.3">Act</li><li data-i18n="step.4">Verify</li>
+    </ol>
+    <figure class="viz case" id="case-fig">
+      <h4 class="case-h" data-i18n="case.h">One recovery, step by step</h4>
+      <p class="viz-sub" data-i18n="case.sub">RoboCasa365, a searing task. The model has been executing, but the pan is not on the active burner. The agent verifies the mismatch at step 2304 and takes over the live scene; the task reaches its official success condition at step 2702.</p>
+      <div id="case-chart" class="case-plot" role="img" data-i18n-aria-label="a11y.case" aria-label="Timeline of one episode. The model executes from step 0 to step 2304, where the agent verifies that the pan is not on the active burner. The agent then retargets the pan handle at step 2503, grasps and lifts the pan at step 2577, transfers it to the burner at step 2638, and the task reaches official success at step 2702."></div>
+      <figcaption data-i18n="case.cap">Redrawn from the report's online recovery cases. In the second case there, a RoboDojo memory task, the agent finds two T-shaped blocks in the wrong arrangement, grasps both, swaps their positions, and releases them with the required headings.</figcaption>
+    </figure>
+    <p class="accept" data-i18n="rec.accept">After each intervention the agent collects fresh observations to see whether the intended change occurred. During a run, recovery works from the current state of the scene; the episode is not reset or replayed.</p>
+  </div>
+
+  <div class="evolve">
+    <h3 data-i18n="evo.h3"><span class="cap-tag">Evolve</span><span class="vh">: </span>Experience becomes skill only after it is validated</h3>
+    <p class="evo-lead" data-i18n="evo.lead">Three things change at three different speeds. Task state updates throughout a run. Skills are revised between runs, and only after validation. Model weights change only in subsequent training. The protocol gives experience a place to go outside the model's parameters.</p>
+    <ol class="phases">
+      <li data-i18n="evo.li1"><span class="ph">Two skills per task</span><strong>Verify and recover</strong> A verify skill captures the observable signs of failure; a recover skill describes which tool combinations work and when to use them. Both are kept as versioned artifacts.</li>
+      <li data-i18n="evo.li2"><span class="ph">Between runs</span><strong>Accumulate</strong> Failures are diagnosed in hindsight and can be replayed. A candidate strategy is retained only when it executes valid physical actions and produces the intended, task-consistent outcome. Failed attempts are kept too, as evidence of when a strategy should not be used.</li>
+      <li data-i18n="evo.li3"><span class="ph">Before promotion</span><strong>Validate</strong> Each revision is versioned and evaluated on fresh held-out configurations before it replaces the one in use. A configuration that has informed a revision is not reused as held-out evidence for the next one.</li>
+      <li data-i18n="evo.li4"><span class="ph">During deployment</span><strong>Hold the version fixed</strong> Each run uses the latest validated pair throughout. What it records can inform a later revision; it does not change the skills in use.</li>
+    </ol>
+    <p class="note" data-i18n="evo.note">Subsequent training draws on successful rollout segments. The evaluations below measure the system with the agent as a whole; they do not isolate what successive skill revisions contribute.</p>
+  </div>
+</section>
+
+<!-- ───────────── Results ───────────── -->
+<section class="sec" id="results">
+  <div class="sec-head">
+    <h2 data-i18n="res.h2">What the agent adds to the same model</h2>
+    <p class="lede" data-i18n="res.lede">First the model on its own: the understanding tower on vision–language benchmarks and the world-prediction tower on video prediction. Then the same model with and without the agent in closed-loop simulation, and control through touch. Reference scores follow the sources noted under each figure.</p>
+  </div>
+
+  <p class="grp" data-i18n="grp.1"><span class="grp-k">The foundation</span> It understands, and it predicts.</p>
+  <figure class="viz" id="und-fig">
+    <h3 data-i18n="und.h3">Understanding: better than its initialization on 16 of 18 benchmarks</h3>
+    <p class="viz-sub" data-i18n="und.sub">Against seven reference models, the understanding tower ranks first on nine benchmarks and in the top two on fourteen.</p>
+    <div class="legend" aria-hidden="true">
+      <span data-i18n="und.lg1"><i class="lg lg-init"></i>Qwen3-VL-8B (initialization)</span>
+      <span data-i18n="und.lg2"><i class="lg lg-ours"></i>Innata-0 understanding tower</span>
+    </div>
+    <div id="und-chart" class="dumb"></div>
+    <figcaption data-i18n="und.cap">Scores on a 0–100 scale, higher is better. Rank is among the eight models in the report: Gemma-4 E4B, Qwen3-VL-8B, Embodied-R1.5 8B, MiMo-Embodied 7B, RoboBrain-2.5 8B, RynnBrain 8B, Cosmos 3 Nano 8B, and ours.</figcaption>
+    <details class="tbl">
+      <summary data-i18n="und.more">Show all eight models</summary>
+      <div class="tbl-wrap" id="und-table"></div>
+    </details>
+  </figure>
+
+  <figure class="viz" id="ewm-fig">
+    <h3 data-i18n="ewm.h3">Video prediction: 67.63 on WorldArena 2.0, the highest of the four models we evaluated</h3>
+    <p class="viz-sub" data-i18n="ewm.sub">Track 1, 1,000 RoboTwin 2.0 episodes. Given a first frame, an instruction, and an action trajectory, predict the video that follows. Innata-0 conditions on the action trajectory; each baseline uses the inputs its released checkpoint supports.</p>
+    <div id="ewm-chart" class="ewm"></div>
+    <div class="gains">
+      <div><span class="g-n">67.49</span><span class="g-l" data-i18n="ewm.g1">Image quality, +13.18 over the best baseline</span></div>
+      <div><span class="g-n">51.02</span><span class="g-l" data-i18n="ewm.g2">Aesthetic quality, +9.17</span></div>
+      <div><span class="g-n">95.68</span><span class="g-l" data-i18n="ewm.g3">Perspectivity, highest of the four</span></div>
+    </div>
+    <figcaption data-i18n="ewm.cap">EWM is the unweighted mean of 15 metrics. All four models were run with the same official code; baselines use their released RoboTwin 2.0 post-trained checkpoints, and Dynamic Degree, Flow Score, and Motion Smoothness are capped at each episode's ground truth. Paper-reported scores are not recomputed and may not apply this cap. Axis starts at 60. Innata-0 trails the strongest baselines on trajectory accuracy (62.81), background consistency, and instruction following, among others.</figcaption>
+  </figure>
+
+  <p class="grp" data-i18n="grp.2"><span class="grp-k">Add the agent</span> Success rises on both benchmarks, and the model did not change.</p>
+  <div class="policy">
+    <figure class="viz">
+      <h3 data-i18n="rc.h3">RoboCasa365: the same checkpoint gains 11.2 points on unseen task compositions</h3>
+      <p class="viz-sub" data-i18n="rc.sub">50 tasks, 2,500 episodes. Both configurations use the same WAM checkpoint and full-task instructions; only the agent differs. Overall success goes from 60.2% to 65.4%, and the gain is largest where tasks are hardest.</p>
+      <div class="tbl-wrap">
+        <table class="rt">
+          <thead><tr><th scope="col" data-i18n="rc.th.model">Model</th><th scope="col" data-i18n="rc.th.type">Type</th><th scope="col" class="n" data-i18n="rc.th.overall">Overall</th><th scope="col" class="n" data-i18n="rc.th.as">Atomic-Seen</th><th scope="col" class="n" data-i18n="rc.th.cs">Composite-Seen</th><th scope="col" class="n" data-i18n="rc.th.cu">Composite-Unseen</th></tr></thead>
+          <tbody>
+            <tr><td>GR00T 2–SFT</td><td>WAM</td><td class="n best">67.2</td><td class="n">87.4</td><td class="n best">73.6</td><td class="n">38.2</td></tr>
+            <tr><td>Awomo-0.5V</td><td>WAM</td><td class="n">62.5</td><td class="n">85.0</td><td class="n">60.4</td><td class="n best">39.4</td></tr>
+            <tr><td>Axiom-0</td><td>VLA</td><td class="n">61.6</td><td class="n">86.5</td><td class="n">59.4</td><td class="n">35.8</td></tr>
+            <tr><td>RPent</td><td>AGENT+VLA</td><td class="n">59.2</td><td class="n">87.8</td><td class="n">43.8</td><td class="n">42.5</td></tr>
+            <tr><td>WorldDreamer v5</td><td>WAM</td><td class="n">57.5</td><td class="n">82.0</td><td class="n">56.0</td><td class="n">31.3</td></tr>
+            <tr><td>Xiaomi-Robotics-1</td><td>VLA</td><td class="n">57.4</td><td class="n">80.2</td><td class="n">57.1</td><td class="n">32.1</td></tr>
+            <tr><td>Meituan-Robotics-0</td><td>VLA</td><td class="n">55.0</td><td class="n">77.3</td><td class="n">57.8</td><td class="n">27.1</td></tr>
+            <tr><td>ABot-M0.5</td><td>WAM</td><td class="n">40.3</td><td class="n">75.6</td><td class="n">37.7</td><td class="n">3.3</td></tr>
+            <tr><td>π0.5</td><td>VLA</td><td class="n">16.9</td><td class="n">39.6</td><td class="n">7.1</td><td class="n">1.2</td></tr>
+            <tr class="aside"><td>GR00T 2<sup>†</sup></td><td>AGENT+WAM</td><td class="n">81.8</td><td class="n">88.2</td><td class="n">86.9</td><td class="n">69.5</td></tr>
+            <tr class="ours ours-first"><th scope="row">Innata-0</th><td>WAM</td><td class="n">60.2</td><td class="n best">88.4</td><td class="n">56.1</td><td class="n">32.4</td></tr>
+            <tr class="ours"><th scope="row">Innata-0</th><td>AGENT+WAM</td><td class="n">65.4</td><td class="n best">90.6</td><td class="n">58.9</td><td class="n best">43.6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption data-i18n="rc.cap">Success rate (%). Reference scores: public leaderboard, November 18, 2026; GR00T 2 rows from its report. † runs the WAM on 23 of 50 tasks and ASPIRE-generated programs on the other 27, with code-as-policy recovery in both; as in the report, it is left out of the bold. Innata-0 receives the full task as a detailed command expanded from the initial observation.</figcaption>
+    </figure>
+
+    <figure class="viz">
+      <h3 data-i18n="rd.h3">RoboDojo-Sim: with the agent, average success rises from 15.98% to 24.17%</h3>
+      <p class="viz-sub" data-i18n="rd.sub">With a fixed plan (VLM + WAM), Innata-0 has the strongest generalization among the listed models. Adding the agent raises the success rate on all five dimensions, most on Open tasks (9.63% to 26.66%), then Generalization (23.67% to 33.20%) and Precision (11.04% to 19.20%).</p>
+      <div class="tbl-wrap">
+        <table class="rt rt-dense">
+          <thead><tr><th scope="col" data-i18n="rd.th.method">Method</th><th scope="col" data-i18n="rd.th.type">Type</th><th scope="col" class="n" data-i18n="rd.th.overall">Average</th><th scope="col" class="n" data-i18n="rd.th.gen">Generalization</th><th scope="col" class="n" data-i18n="rd.th.prec">Precision</th><th scope="col" class="n" data-i18n="rd.th.long">Long-horizon</th><th scope="col" class="n" data-i18n="rd.th.mem">Memory</th><th scope="col" class="n" data-i18n="rd.th.open">Open</th></tr></thead>
+          <tbody>
+            <tr><td>InternW0-Δ</td><td>WAM</td><td class="n"><b>30.77</b> / 23.91</td><td class="n">30.09 / 22.78</td><td class="n">31.98 / 23.25</td><td class="n"><b>46.29</b> / 29.33</td><td class="n">34.67 / 34.00</td><td class="n"><b>10.84</b> / <b>10.17</b></td></tr>
+            <tr><td>Liber-0 Preview</td><td>VLM + WAM</td><td class="n">30.74 / <b>25.52</b></td><td class="n">24.99 / 18.61</td><td class="n"><b>38.28</b> / <b>33.17</b></td><td class="n">45.98 / <b>33.17</b></td><td class="n">37.77 / 37.33</td><td class="n">6.68 / 5.33</td></tr>
+            <tr><td>Meituan-Robotics-0</td><td>VLA</td><td class="n">21.68 / 15.73</td><td class="n">16.31 / 10.50</td><td class="n">21.24 / 11.17</td><td class="n">27.07 / 13.92</td><td class="n"><b>39.52</b> / <b>39.22</b></td><td class="n">4.28 / 3.83</td></tr>
+            <tr><td>ME-Brain-1.0</td><td>VLA + WAM</td><td class="n">21.67 / 15.99</td><td class="n">21.81 / 15.34</td><td class="n">24.23 / 15.92</td><td class="n">32.96 / 20.58</td><td class="n">23.53 / 22.78</td><td class="n">5.83 / 5.33</td></tr>
+            <tr><td>GalaxeaVLA (G0.5)</td><td>VLA</td><td class="n">20.23 / 14.88</td><td class="n">18.46 / 12.83</td><td class="n">28.25 / 20.42</td><td class="n">44.12 / 32.25</td><td class="n">8.61 / 7.33</td><td class="n">1.73 / 1.58</td></tr>
+            <tr><td>Xiaomi-Robotics-1</td><td>VLA</td><td class="n">20.07 / 13.93</td><td class="n">23.54 / 17.00</td><td class="n">26.69 / 18.83</td><td class="n">38.39 / 23.67</td><td class="n">7.81 / 6.56</td><td class="n">3.94 / 3.58</td></tr>
+            <tr><td>MachEmbodied-U0</td><td>WAM</td><td class="n">17.78 / 11.51</td><td class="n">16.07 / 8.78</td><td class="n">24.20 / 16.67</td><td class="n">36.66 / 22.25</td><td class="n">8.16 / 6.67</td><td class="n">3.78 / 3.17</td></tr>
+            <tr><td>Hy-Embodied-0.5-VLA</td><td>VLA</td><td class="n">13.07 / 8.80</td><td class="n">11.78 / 8.39</td><td class="n">13.81 / 8.00</td><td class="n">25.74 / 14.92</td><td class="n">13.37 / 12.11</td><td class="n">0.65 / 0.58</td></tr>
+            <tr><td>Cosmos3-Nano<sup>†</sup></td><td>WAM</td><td class="n">3.03 / 0.93</td><td class="n">2.58 / 1.00</td><td class="n">2.29 / 0.00</td><td class="n">8.74 / 2.75</td><td class="n">1.23 / 0.67</td><td class="n">0.30 / 0.25</td></tr>
+            <tr class="ours ours-first"><th scope="row">Innata-0</th><td>VLM + WAM</td><td class="n">23.04 / 15.98</td><td class="n"><b>30.88</b> / <b>23.67</b></td><td class="n">21.58 / 11.04</td><td class="n">32.31 / 18.56</td><td class="n">19.90 / 17.00</td><td class="n">10.53 / 9.63</td></tr>
+            <tr class="ours"><th scope="row">Innata-0</th><td>AGENT + WAM</td><td class="n">30.02 / 24.17</td><td class="n"><b>39.01</b> / <b>33.20</b></td><td class="n">27.07 / 19.20</td><td class="n">32.99 / 20.00</td><td class="n">23.58 / 21.78</td><td class="n"><b>27.46</b> / <b>26.66</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption data-i18n="rd.cap">Score / success rate (%), public leaderboard, November 18, 2026; Average is the equal-weight mean of the five dimensions. Bold marks the best result among the listed models in each column, as in the report. In VLM + WAM the VLM only advances a fixed plan and never rewrites it. † Reproduced and fine-tuned by the FluxVLA project.</figcaption>
+    </figure>
+
+    <p class="note res-note" data-i18n="rcv.note">The agent steps in where the model needs it: on RoboCasa365, 85.8% of Atomic-Seen episodes finish without any recovery, against 50.6% of Composite-Seen and 26.3% of Composite-Unseen.</p>
+
+    <p class="grp" data-i18n="grp.4"><span class="grp-k">With touch</span> First on both tactile benchmarks.</p>
+    <figure class="viz" id="tac-fig">
+      <h3 data-i18n="tac.h3">Touch: first on both the gripper and the dexterous-hand benchmark</h3>
+      <p class="viz-sub" data-i18n="tac.sub">One regional tactile representation serves both: touch is an observation the model conditions on and a target it predicts together with the action.</p>
+      <div class="gains gains-2">
+        <div><span class="g-n">86.1%</span><span class="g-l" data-i18n="tac.g1">UniVTAC, average success over eight gripper tasks; first of 15 methods, next best 84.5. The WAM runs as a standalone closed-loop policy.</span></div>
+        <div><span class="g-n">53.82</span><span class="g-l" data-i18n="tac.g2">Bench2Dex, overall composite Score on ten selected dexterous-hand tasks; first of 13 methods, next best 53.52. Evaluated within the agent system.</span></div>
+      </div>
+      <figcaption data-i18n="tac.cap">Bench2Dex reports a composite Score combining stable success, stage completion, and efficiency; it is not a success rate. On Bench2Dex, Innata-0 ranks first on three tasks: Baking Tray Prep (51.76), Breadbasket Fast-Food Loading (72.79), and Sports Ball Cup Sort (58.45). Bench2Dex baselines reflect the leaderboard as of November 18, 2026.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ───────────── Cite ───────────── -->
+<section class="sec" id="cite">
+  <div class="sec-head">
+    <h2 data-i18n="cite.h2">Cite</h2>
+  </div>
+  <div class="bib">
+    <pre id="bibtex">@techreport{innata2026,
+  title = {{Innata-0: A Native Embodied World System with Model-Agent Co-Design}},
+  author = {{Innata Team} and Bai, Yu and Bai, Ziyi and Cai, Yuxuan and He, Chenrui and Li, Wenhao and Lin, Zhe
+    and Wang, Heng and Yuan, Hai and Yu, Zhiwei and Zhang, Yuanhang and Chen, Luyou and Gao, Tiezhu and Geng, Zheng
+    and Guo, Jinbang and Han, Dongxu and He, Diqi and Karlsson, B{\"o}rje F. and Li, Jintao and Li, Zhiyu
+    and Linghu, Xiongkun and Liu, Guang and Liu, You and Luo, Zhen and Lyu, Mengsi and Lyu, Yufeng and Lyu, Zheng
+    and Ma, Quanyue and Men, Chunlei and Ni, Ziqiang and Pan, Tengfei and Shen, Yijun and Sun, Liang and Xie, Shaoxuan
+    and Yang, Xiang and Yao, Guocai and Zhang, Hongjun and Zhao, Yingli and Huang, Tiejun and Lin, Yonghua
+    and Wang, Zhongyuan and Yang, Huan},
+  institution = {Beijing Academy of Artificial Intelligence},
+  year = {2026},
+  month = nov,
+  url = {https://baai-eai.github.io/innata-0}
+}</pre>
+    <button class="bib-copy" id="copy-bib" type="button" aria-label="Copy BibTeX" data-i18n-aria-label="cite.copy">
+      <svg class="i-copy" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/></svg>
+      <svg class="i-done" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10.5l4 4 8-9"/></svg>
+      <span class="bib-copy-note" role="status"></span>
+    </button>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p data-i18n="foot.p">Innata Team, Beijing Academy of Artificial Intelligence, 2026.</p>
+</footer>
+
+<div class="tip" id="tip" role="tooltip" hidden></div>
+<script src="assets/js/site.js?v=c0dc83e5" defer></script>
+</body>
+</html>
