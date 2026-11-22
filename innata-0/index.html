@@ -21,16 +21,19 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="assets/css/site.css?v=d5fc6bbe">
-<!-- Visit statistics (Google tag). Requested only on the published site (or with ?ga=1, for a deliberate test),
-     and only after the page itself has loaded: where Google cannot be reached, nothing on the page waits for it. -->
+<!-- Visit statistics (the team's own Google tag, G-FRELMNKL1N). Requested only on the published site (or with
+     ?ga=1, for a deliberate test), and only after the page itself has loaded: where Google cannot be reached,
+     nothing on the page waits for it. -->
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 (function(){
+  var ID = "G-FRELMNKL1N";
   // published site, or any address opened with ?ga=1 (a deliberate test run)
   if (location.hostname !== "baai-eai.github.io" && !/[?&]ga=1(&|$)/.test(location.search)) return;
-  function go(){ var s = document.createElement("script"); s.async = true; s.src = "https://www.googletagmanager.com/gtm.js?id=GTM-KP5TNFQL"; document.head.appendChild(s); }
+  gtag('config', ID);
+  function go(){ var s = document.createElement("script"); s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + ID; document.head.appendChild(s); }
   if (document.readyState === "complete") go(); else addEventListener("load", go, { once: true });
 })();
 </script>
