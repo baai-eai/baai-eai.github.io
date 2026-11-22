@@ -822,8 +822,10 @@
       say(hs, hv.muted ? T("Unmute", "开启声音") : T("Mute", "静音"));
       hs.setAttribute("aria-pressed", String(hv.muted));
       if (cue) {                                  // while the browser holds back the sound, or the film itself, and the visitor has not declined
-        cue.lastElementChild.textContent = waiting ? T("Click to play", "点击播放") : T("Click for sound", "点击开启声音");
-        cue.classList.toggle("is-go", waiting);
+        // What the tap will do, read off the film itself: start it if it is stopped, bring the sound in if it is running.
+        const stopped = waiting || hv.paused;
+        cue.lastElementChild.textContent = stopped ? T("Click to play", "点击播放") : T("Click for sound", "点击开启声音");
+        cue.classList.toggle("is-go", stopped);
         cue.hidden = !((waiting || (blocked && wantSound)) && !userPaused);
         placeCue();
       }
@@ -857,7 +859,10 @@
       if (onScreen && !document.hidden && !userPaused) { source(); if (hv.paused && !waiting) play(); }   // while waiting for a tap, do not keep asking
       else if (!hv.paused) hv.pause();
     };
-    hv.addEventListener("playing", () => { if (waiting) { waiting = false; labels(); } });
+    // the hint follows the film: whatever the browser refused earlier, once it plays the tap is only about sound
+    const relabel = () => { if (waiting && !hv.paused) waiting = false; labels(); };
+    hv.addEventListener("playing", relabel);
+    hv.addEventListener("pause", relabel);
     heroLabels = () => {
       const poster = pick("poster");
       if (poster && hv.getAttribute("poster") !== poster) hv.setAttribute("poster", poster);
@@ -896,7 +901,7 @@
     };
     hp.addEventListener("click", toggle);
     hv.addEventListener("click", (e) => { if (!e.soundUnlocked) toggle(); });   // a click that just brought the sound on is not also a pause
-    if (cue) cue.addEventListener("click", (e) => { if (waiting) { e.stopPropagation(); startByTap(); } });
+    if (cue) cue.addEventListener("click", (e) => { if (waiting || hv.paused) { e.stopPropagation(); startByTap(); } });
     hs.addEventListener("click", () => {
       if (hv.muted) { wantSound = true; blocked = false; hv.muted = false; }
       else { wantSound = false; hv.muted = true; }
