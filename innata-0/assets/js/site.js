@@ -907,8 +907,15 @@
       blocked = false;
       if (wantSound) {
         hv.muted = false;
-        // hear it from the start, unless the visitor is working the controls or has paused
-        if (!bar.contains(e.target) && !hp.contains(e.target) && !userPaused && !hv.paused) { if (hv.currentTime > 1) hv.currentTime = 0; e.soundUnlocked = true; }
+        // Carries on from wherever it is: a tap for sound is not a request to start over. Some browsers pause a
+        // film that becomes audible without a fresh gesture, so resume it. That tap is spent on the sound, not a pause.
+        if (!bar.contains(e.target) && !hp.contains(e.target) && !userPaused) {
+          e.soundUnlocked = true;
+          if (hv.paused) {
+            const started = hv.play();
+            if (started && started.catch) started.catch(() => { waiting = true; labels(); });
+          }
+        }
       }
       labels();
     };
