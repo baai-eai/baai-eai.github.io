@@ -524,7 +524,7 @@ details.tbl summary:hover { color: var(--ink); }
 .if-head { fill: none; stroke: context-stroke; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .if-dot.if-agent { fill: var(--u); }
 .if-dot.if-wam { fill: var(--a); }
-.case { margin: 36px 0 30px; max-width: 980px; }
+.case { margin: 36px 0 30px; }
 .case-h { margin: 0 0 6px; font-size: 19px; font-weight: 700; }
 .cs-wam { fill: color-mix(in srgb, var(--a) 62%, var(--sheet)); }
 .cs-agent { fill: color-mix(in srgb, var(--u) 72%, var(--sheet)); }

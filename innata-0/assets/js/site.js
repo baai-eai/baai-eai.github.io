@@ -663,7 +663,7 @@
     W = Math.max(W - 56, 260);                       // the card's padding
     const narrow = W < 720, end = 2702, at = 2304;
     if (narrow) {
-      const rowH = 54, H = 96 + CASE.length * rowH, svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H }, host);
+      const rowH = 62, H = 96 + CASE.length * rowH, svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H }, host);
       el("rect", { class: "cs-wam", x: 0, y: 6, width: W, height: 12, rx: 6 }, svg);
       const xa = W * at / end;
       el("rect", { class: "cs-agent", x: xa, y: 6, width: W - xa, height: 12, rx: 6 }, svg);
@@ -674,7 +674,9 @@
         el("circle", { class: "cs-node" + (i === 0 ? " first" : i === CASE.length - 1 ? " last" : ""), cx: 11, cy: y - 5, r: 11 }, svg);
         txt(svg, 11, y, String(i + 1), "cs-n", { "text-anchor": "middle" });
         txt(svg, 34, y, T(name[0], name[1]), "if-f1");
-        txt(svg, 34, y + 20, T("step ", "第 ") + st + T("", " 步") + (T(note[0], note[1]) ? " · " + T(note[0], note[1]) : ""), "if-f2");
+        txt(svg, 34, y + 20, T("step ", "第 ") + st + T("", " 步"), "if-f2");
+        // a long note goes on its own line rather than running past the edge of the card
+        if (T(note[0], note[1])) txt(svg, 34, y + 38, T(note[0], note[1]), "if-f2");
       });
       return;
     }
